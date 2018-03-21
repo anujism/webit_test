@@ -42,7 +42,7 @@ def client_list_data(request):
     return JsonResponse(output, safe=False)
 
 
-# TODO: Can be handled using class based view but client wanted separate views.
+# TODO: Can be handled using two class based view with correct PUT method for update.
 
 def post_client(request, template_name, client_id=None):
     client = None

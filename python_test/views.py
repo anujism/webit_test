@@ -26,15 +26,12 @@ def client_list_data(request):
         search_params = json.loads(search_params)
         search_params.pop('csrfmiddlewaretoken', None)
         search_params = {k+'__icontains': v for k, v in search_params.items() if v}
-        print(search_params)
         clients = clients.filter(**search_params)
 
     if order_by:
-        clients = clients.order_by(order_by)
         if order_type == 'desc':
-            clients = clients.desc()
-        else:
-            clients = clients.asc()
+            order_by = "-" + order_by
+        clients = clients.order_by(order_by)
     clients = clients[offset:offset+limit]
 
     total = clients.count()

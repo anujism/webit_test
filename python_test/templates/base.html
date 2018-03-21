@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Application</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table.min.js' %}"></script>
+    {% block header %}{% endblock %}
+</head>
+<body>
+    {% block content_body %}
+        <div class="container">
+            <section role="main" class="content-body">
+                <header class="page-header">
+                    <h2>{% block content_title %}Client Application{% endblock content_title %}</h2>
+                </header>
+
+                {% block content %}
+                    <h2>Client Data</h2>
+                {% endblock content %}
+            </section>
+        </div>
+
+{% endblock content_body %}
+</body>
+</html>

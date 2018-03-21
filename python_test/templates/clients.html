@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div>
+        <div class="text-right">
+            <a href="/add-client" class="btn btn-primary">
+                Add Client
+            </a>
+        </div>
+        <form id="search-form" method="get" autocomplete="off" enctype="multipart/form-data"
+            autocomplete="off">
+            {% csrf_token %}
+            {% if request.method == "POST" %}
+            <div class="row form-group">
+                {% if form.errors or form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <p>Please resolve the errors in form first.</p>
+                        <p>{{ form.non_field_errors }}</p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        The form is submitted successfully.
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="row form-group">
+                <div class="col-lg-6">
+                    <div class="help-block">{{ form.name.errors }}</div>
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                </div>
+                <div class="col-lg-6">
+                    <div class="help-block">{{ form.email.errors }}</div>
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-lg-6">
+                    <div class="help-block">{{ form.phone.errors }}</div>
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                </div>
+                <div class="col-lg-6">
+                    <div class="help-block">{{ form.suburb.errors }}</div>
+                    {{ form.suburb.label_tag }}
+                    {{ form.suburb }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success text-center">Search</button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="table-responsive">
+            <section class="panel-body">
+                <table id="table"
+                       data-toggle="table"
+                       data-url="/client-list-data/"
+                       data-height="400"
+                       data-side-pagination="server"
+                       data-pagination="true"
+                       data-query-params="queryParams">
+                    <thead>
+                    <tr>
+                        <th data-formatter="format_actions">
+                            Actions
+                        </th>
+                        <th data-field="name">Name</th>
+                        <th data-field="email">Email</th>
+                        <th data-field="phone">Phone</th>
+                        <th data-field="contact_name">Contact Name</th>
+                        <th data-field="street_name">Street Name</th>
+                        <th data-field="suburb">Suburb</th>
+                        <th data-field="postcode">Postcode</th>
+                        <th data-field="state">State</th>
+                    </tr>
+                    </thead>
+                </table>
+            </section>
+        </div>
+    </div>
+<script>
+    function format_actions(data, row){
+        return '<div class="actions">' +
+                    '<div class="btn-group-vertical">' +
+                         '<a href="/edit-client/'+row.id +'" class="on-default btn-xs btn-primary">Edit&nbsp;Client</a>'+
+                    '</div>'+
+               '</div>';
+    }
+
+    function getFormData($form){
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array, function(n, i){
+            indexed_array[n['name']] = n['value'];
+        });
+
+        return indexed_array;
+    }
+
+    function queryParams(params) {
+        var search_params = getFormData($('#search-form'));
+        params["search_params"] = JSON.stringify(search_params);
+        return params;
+    }
+
+    $('#search-form').on('submit', function (e) {
+        e.preventDefault();
+        var $table = $('#table');
+        $table.bootstrapTable('refresh', {'pageNumber': 1});
+    });
+
+</script>
+{% endblock %}
